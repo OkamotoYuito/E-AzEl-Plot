@@ -149,7 +149,7 @@ export default function SettingSidebar({ onPlot }: SettingSidebarProps) {
         }
       }
     }
-  }, [targets]);
+  }, [targets, handlePlot]);
 
   useEffect(() => {
     if (targets.length > 0 && date && timezone && site) {

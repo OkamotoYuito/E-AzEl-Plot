@@ -77,7 +77,7 @@ export default function SettingSidebar({ onPlot }: SettingSidebarProps) {
   const handlePlot = async () => {
     const payload = { date, timezone, site, targets };
     try {
-      const res = await fetch("http://localhost:8000/generate", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

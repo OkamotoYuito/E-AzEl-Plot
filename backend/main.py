@@ -5,20 +5,21 @@ from pydantic import BaseModel
 from typing import List
 from plot_azel import generate_azel_plot
 import base64
-
+import os
 import matplotlib
 matplotlib.use('Agg')
 
 
 app = FastAPI()
 
+origins = list(filter(None, {
+    os.getenv("FRONTEND_ORIGIN"),
+    "http://localhost:3000",
+}))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://e-azel-plot.vercel.app",
-        ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -198,10 +198,12 @@ def set_targets_with_error_handling(
             # エラーメッセージを簡略化
             error_msg = f"Could not find coordinates for '{target_name}'."
             target_errors.append({"name": target_name, "error": error_msg})
-        except Exception:
+        except Exception as e: # 具体的なエラー情報を取得するために変更
+            # エラーの詳細をログに出力（Vercelのログで確認できるように）
+            print(f"Error resolving target '{target_name}': {type(e).__name__} - {str(e)}")
+            # フロントに返すエラーメッセージにも詳細を含める
             error_msg = (
-                f"An unexpected error occurred while resolving "
-                f"'{target_name}'."
+                f"Unexpected error for '{target_name}': {type(e).__name__} - {str(e)}"
             )
             target_errors.append({"name": target_name, "error": error_msg})
     return processed_targets, target_errors

@@ -1,3 +1,4 @@
+import logging # loggingモジュールをインポート
 import dateutil
 import numpy
 import matplotlib.pyplot
@@ -15,6 +16,12 @@ from components.get_localtime import get_localtime
 # 定数は大文字で定義
 FIG_SIZE = (10, 8)
 PLOT_DPI = 200
+
+# ロガーの設定 (モジュールのトップレベルで行う)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO) # INFOレベル以上のログを出力 (ERRORも含む)
+# Vercelの環境では通常、標準出力や標準エラー出力へのログは自動的に収集されるため、
+# 特定のハンドラ設定は不要な場合が多い。
 
 
 def setup_plot_style(timezone: str) -> Tuple[
@@ -194,18 +201,20 @@ def set_targets_with_error_handling(
                     "is_sun": is_sun
                 }
             )
-        except astropy.coordinates.name_resolve.NameResolveError as e: # NameResolveErrorを補足するブロック
-            print(f"NameResolveError for '{target_name}': {type(e).__name__} - {str(e)}") # 詳細をログに出力
-            error_msg = f"Could not find coordinates for '{target_name}'."
-            target_errors.append({"name": target_name, "error": error_msg})
-        except Exception as e: # 具体的なエラー情報を取得するために変更
-            # エラーの詳細をログに出力（Vercelのログで確認できるように）
-            print(f"Error resolving target '{target_name}': {type(e).__name__} - {str(e)}")
-            # フロントに返すエラーメッセージにも詳細を含める
+        except astropy.coordinates.name_resolve.NameResolveError as e:
+            log_message = f"NameResolveError for '{target_info.get('label', 'N/A')}': {type(e).__name__} - {str(e)}"
+            logger.error(log_message) # logging を使用
+            print(f"DEBUG_PRINT: {log_message}") # 念のためprintも残す
+            error_msg = f"Could not find coordinates for '{target_info.get('label', 'N/A')}'."
+            target_errors.append({"name": target_info.get('label', 'N/A'), "error": error_msg})
+        except Exception as e:
+            log_message = f"Unexpected error for '{target_info.get('label', 'N/A')}': {type(e).__name__} - {str(e)}"
+            logger.error(log_message) # logging を使用
+            print(f"DEBUG_PRINT: {log_message}") # 念のためprintも残す
             error_msg = (
-                f"Unexpected error for '{target_name}': {type(e).__name__} - {str(e)}"
+                f"Unexpected error for '{target_info.get('label', 'N/A')}': {type(e).__name__} - {str(e)}"
             )
-            target_errors.append({"name": target_name, "error": error_msg})
+            target_errors.append({"name": target_info.get('label', 'N/A'), "error": error_msg})
     return processed_targets, target_errors
 
 

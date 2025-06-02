@@ -1,4 +1,4 @@
-fastapi
-uvicorn
-matplotlib
-astropy
+fastapi==0.115.12
+uvicorn==0.34.2
+matplotlib==3.8.0
+astropy==5.3.4

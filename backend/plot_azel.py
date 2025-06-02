@@ -194,8 +194,8 @@ def set_targets_with_error_handling(
                     "is_sun": is_sun
                 }
             )
-        except astropy.coordinates.name_resolve.NameResolveError:
-            # エラーメッセージを簡略化
+        except astropy.coordinates.name_resolve.NameResolveError as e: # NameResolveErrorを補足するブロック
+            print(f"NameResolveError for '{target_name}': {type(e).__name__} - {str(e)}") # 詳細をログに出力
             error_msg = f"Could not find coordinates for '{target_name}'."
             target_errors.append({"name": target_name, "error": error_msg})
         except Exception as e: # 具体的なエラー情報を取得するために変更

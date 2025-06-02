@@ -13,6 +13,16 @@ import io
 from components.get_site import get_site
 from components.get_localtime import get_localtime
 
+from astropy.utils.iers import conf as iers_conf
+iers_conf.remote_timeout = 30.0
+
+from astropy.coordinates import conf as coord_conf
+try:
+    coord_conf.remote_timeout = 30.0
+except AttributeError:
+    # 古いAstropyではこの設定がない場合があるので、エラーが出ても無視
+    print("Skipping astropy.coordinates.conf.remote_timeout setting.")
+
 # 定数は大文字で定義
 FIG_SIZE = (10, 8)
 PLOT_DPI = 200

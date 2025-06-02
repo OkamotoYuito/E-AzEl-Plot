@@ -6,7 +6,6 @@ import matplotlib.dates
 import matplotlib.ticker
 import astropy.time
 import astropy.coordinates
-from astropy.coordinates import name_resolve # 追加
 from typing import List, Dict, Tuple, Any
 
 import io
@@ -22,32 +21,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO) # INFOレベル以上のログを出力 (ERRORも含む)
 # Vercelの環境では通常、標準出力や標準エラー出力へのログは自動的に収集されるため、
 # 特定のハンドラ設定は不要な場合が多い。
-
-# 現在のAstropy名前解決サービスリストをログに出力 # 追加
-logger.info(f"Default Astropy name resolve services: {name_resolve.NAME_RESOLVE_SERVICES}")
-print(f"DEBUG_PRINT: Default Astropy name resolve services: {name_resolve.NAME_RESOLVE_SERVICES}")
-
-# Sesame ('cds') 以外のサービスを優先する試み # 追加
-current_services = name_resolve.NAME_RESOLVE_SERVICES.copy()
-preferred_order = []
-other_services = []
-
-if 'simbad' in current_services:
-    preferred_order.append('simbad')
-    current_services.pop(current_services.index('simbad'))
-if 'ned' in current_services:
-    preferred_order.append('ned')
-    current_services.pop(current_services.index('ned'))
-
-other_services = current_services
-
-if preferred_order:
-    name_resolve.NAME_RESOLVE_SERVICES = preferred_order + other_services
-    logger.info(f"Updated Astropy name resolve services to: {name_resolve.NAME_RESOLVE_SERVICES}")
-    print(f"DEBUG_PRINT: Updated Astropy name resolve services to: {name_resolve.NAME_RESOLVE_SERVICES}")
-else:
-    logger.info("Could not change preferred name resolve services (simbad or ned not found in list).")
-    print("DEBUG_PRINT: Could not change preferred name resolve services (simbad or ned not found in list).")
 
 # 定数は大文字で定義
 FIG_SIZE = (10, 8)
